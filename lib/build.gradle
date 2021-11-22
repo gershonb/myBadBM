@@ -75,3 +75,4 @@ task fatJar(type: Jar) {
     }
     with jar
 }
+
