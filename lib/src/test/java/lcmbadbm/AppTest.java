@@ -15,7 +15,7 @@ class AppTest {
     }
 
     /**
-     * Cross checked targetMarkSizeKb with for loop
+     * I –  targetMarkSizeKb with addition
      */
     @Test
     void crossCheckTesttargetMarkSizeKb(){
