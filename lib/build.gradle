@@ -3,7 +3,9 @@
  *
  * This generated file contains a sample Java library project to get you started.
  * For more details take a look at the 'Building Java & JVM projects' chapter in the Gradle
- * User Manual available at https://docs.gradle.org/7.3-20211022000247+0000/userguide/building_java_projects.html
+
+ * User Manual available at https://docs.gradle.org/7.3-20211025153004+0000/userguide/building_java_projects.html
+
  */
 
 plugins {
@@ -25,6 +27,9 @@ dependencies {
 
     // This dependency is used internally, and not exposed to consumers on their own compile classpath.
     implementation 'com.google.guava:guava:30.1.1-jre'
+
+
+    // Cohen additions
     // Charting api/runtime
     api  group: 'org.jfree', name: 'jfreechart', version: '1.0.17'
 // persistence API
@@ -34,10 +39,19 @@ dependencies {
     implementation group: 'org.apache.derby', name: 'derby', version: '10.15.2.0'
     implementation group: 'org.apache.derby', name: 'derbyshared', version: '10.15.2.0'
 }
+
+
+tasks.named('test') {
+    // Use JUnit Platform for unit tests.
+    useJUnitPlatform()
+}
+
+
 sourceSets  {
     // this may be needed to make entity classes visible to the persistence scanner
     sourceSets.main.output.resourcesDir = sourceSets.main.java.outputDir
 }
+
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveName("badbm.jar")
@@ -68,3 +82,20 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+        attributes 'Main-Class': 'lib.src.java.edu.touro.mco152.bm.App'
+    }
+}
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'lib.src.java.edu.touro.mco152.bm.App'
+    }
+    archiveClassifier = "all"
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
+}
+
+
