@@ -1,11 +1,18 @@
 package edu;
 
 import edu.touro.mco152.bm.App;
+import edu.touro.mco152.bm.persist.DiskRun;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class AppTest {
+    public int numOfMarks = 25;      // desired number of marks
+    public int numOfBlocks = 128;
+    public int blockSizeKb = 2048;
+    //int blockSize = blockSizeKb * KILOBYTE;
+    //Sequence of IO operations. (random vs. seq.)
+    public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
     /**
      * test for targetMarkSizeKb
      */
