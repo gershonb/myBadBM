@@ -255,7 +255,8 @@ public class App {
         Gui.mainFrame.adjustSensitivity();
 
         //4. set up disk worker thread and its event handlers
-        worker = new DiskWorker(new SOLIDUserInterface());
+        worker = new DiskWorker(new SwingUI());
+        worker.inter.setPassedDW(worker);
         worker.addPropertyChangeListener((final PropertyChangeEvent event) -> {
             switch (event.getPropertyName()) {
                 case "progress":
@@ -277,6 +278,7 @@ public class App {
         });
 
         //5. start the Swing worker thread
+
         worker.execute();
     }
 

@@ -40,17 +40,32 @@ import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
 
 public class DiskWorker {
 
-    IExecutor executor;
+    //IExecutor executor;
+    simpleExecutor simpleExecutor;
 
     public final IUserInterface inter;
+
+    ///
+    public static final int KILOBYTE = 1024;
+
+    private boolean readTest = false;
+    private boolean writeTest = true;
+    private int numOfMarks = 25;      // desired number of marks
+    private int numOfBlocks = 32;
+    private int blockSizeKb = 512;
+    int blockSize = blockSizeKb * KILOBYTE;
+
+    //Sequence of IO operations. (random vs. seq.)
+    public enum BlockSequence {SEQUENTIAL, RANDOM}
+
+    public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
+
+    //
 
     public DiskWorker(IUserInterface inter) {
         this.inter = inter;
     }
 
-    public void setExecutor(IExecutor executor) {
-        this.executor = executor;
-    }
     protected Boolean doInBackground() throws Exception {
 
         /*
@@ -100,7 +115,8 @@ public class DiskWorker {
 
         //Write code from here---------------------
         if (App.writeTest) {
-            executor.DoWrites();
+            simpleExecutor se = new simpleExecutor(new DWWrites(this, this.readTest, this.writeTest, this.numOfMarks, this.numOfBlocks, this.blockSizeKb, this.blockSequence));
+            se.start();
         }
 
 
@@ -125,7 +141,8 @@ public class DiskWorker {
 
         //Read Code from here----------------
         if (App.readTest) {
-            executor.DoReads();
+            simpleExecutor se = new simpleExecutor(new DWReads(this, this.readTest, this.writeTest, this.numOfMarks, this.numOfBlocks, this.blockSizeKb, this.blockSequence));
+            se.start();
         }
 
 
@@ -157,6 +174,5 @@ public class DiskWorker {
 
     public void execute() {
         inter.DWexecute();
-
     }
 }

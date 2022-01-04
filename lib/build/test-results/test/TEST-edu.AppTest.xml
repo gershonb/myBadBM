@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="edu.AppTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2022-01-04T05:58:28" hostname="DESKTOP-0AIG9E4" time="0.056">
+  <properties/>
+  <testcase name="testresetTestData()" classname="edu.AppTest" time="0.039"/>
+  <testcase name="targetMarkSizeKb()" classname="edu.AppTest" time="0.008"/>
+  <testcase name="targetTxSizeKb()" classname="edu.AppTest" time="0.004"/>
+  <testcase name="crossCheckTesttargetMarkSizeKb()" classname="edu.AppTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

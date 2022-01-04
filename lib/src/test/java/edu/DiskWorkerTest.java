@@ -6,12 +6,13 @@ import edu.touro.mco152.bm.IUserInterface;
 import edu.touro.mco152.bm.ui.Gui;
 import edu.touro.mco152.bm.ui.MainFrame;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.testng.annotations.Test;
 
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.Properties;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DiskWorkerTest implements IUserInterface {
 
@@ -26,7 +27,7 @@ public class DiskWorkerTest implements IUserInterface {
      * @author lcmcohen
      */
     @BeforeAll
-    private void setupDefaultAsPerProperties()
+    static void setupDefaultAsPerProperties()
     {
 
 
@@ -58,20 +59,55 @@ public class DiskWorkerTest implements IUserInterface {
         }
     }
 
-//interface override methods
+
+    /**
+     * Test Methods
+     */
+
+    @Test
+    void testprogressSetter() throws Exception {
+        diskWorker.execute();
+        temp = percentCompleted > 0;
+        System.out.println(percentCompleted + "this is percent complete");
+        assertTrue(temp);
+        System.out.println("yay the test works");
+    }
+
+    @Test
+    void testpublishData() throws Exception {
+        diskWorker.execute();
+        double temp = marker.getCumAvg();
+        assertTrue(temp > 0);
+
+    }
+
+    @Test
+    public void testDWsetProgress(int i) {
+        assertTrue(i >= 0 && i <= 100);
+    }
+
+
+    @Test
+    public void testDWcancel(boolean bool) {
+        assertTrue(this.DWcancel(true));
+        assertFalse(this.DWcancel(false));
+    }
+
+
+
     @Override
     public void DWsetProgress(int i) {
-        percentCompleted = i;
+
     }
 
     @Override
     public boolean DWisCancelled() {
-        return false;
+        return true;
     }
 
     @Override
     public void DWpublish(DiskMark m) {
-        marker = m;
+
     }
 
     @Override
@@ -81,7 +117,7 @@ public class DiskWorkerTest implements IUserInterface {
 
     @Override
     public boolean DWcancel(boolean bool) {
-        return false;
+        return bool;
     }
 
     @Override
@@ -89,22 +125,13 @@ public class DiskWorkerTest implements IUserInterface {
 
     }
 
-    //Test
+    @Override
+    public void run() {
 
-    @Test
-    void progressSetter() throws Exception {
-        diskWorker.execute();
-        temp = percentCompleted > 0;
-        System.out.println(percentCompleted + "this is percent complete");
-        assertTrue(temp);
-        System.out.println("yay the test works");
     }
 
-    @Test
-    void publishData() throws Exception {
-        diskWorker.execute();
-        double temp = marker.getCumAvg();
-        assertTrue(temp > 0);
-
+    @Override
+    public void setPassedDW(DiskWorker dw) {
+        this.diskWorker = dw;
     }
 }

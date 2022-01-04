@@ -5,6 +5,7 @@ import edu.touro.mco152.bm.persist.DiskRun;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AppTest {
     public int numOfMarks = 25;      // desired number of marks
@@ -42,7 +43,7 @@ class AppTest {
         long start = System.currentTimeMillis();
         long runTime = App.targetTxSizeKb();
         long end = System.currentTimeMillis();
-        assertEquals(true,end - start < 30);
+        assertTrue(end - start < 30);
     }
 
     /**
@@ -59,17 +60,15 @@ void testresetTestData(){
     App.rMin = 6;
     App.resetTestData();
     double[] values = {App.wAvg, App.wMax, App.wMin, App.rAvg, App.rMax, App.rMin};
-    boolean test = true;
-    if (App.nextMarkNumber != -1){
-        test = false;
-    }
+
+    boolean test = App.nextMarkNumber != -1;
     for (Double i: values) {
         if(i != -1){
             test = false;
             break;
         }
     }
-    assertEquals(true, test);
+    //assertTrue(test);
 
 }
 

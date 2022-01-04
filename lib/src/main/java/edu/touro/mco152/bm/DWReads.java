@@ -17,8 +17,13 @@ import static edu.touro.mco152.bm.App.*;
 import static edu.touro.mco152.bm.App.msg;
 import static edu.touro.mco152.bm.DiskMark.MarkType.READ;
 
-public class DWReads{
 
+/**
+ * Does the reads for a disk worker
+ */
+public class DWReads implements Runnable{
+
+    DiskWorker dw;
     public boolean readTest;
     public boolean writeTest;
     public int numOfMarks;      // desired number of marks
@@ -28,7 +33,8 @@ public class DWReads{
     //Sequence of IO operations. (random vs. seq.)
     public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
 
-    public DWReads(boolean readTest, boolean writeTest, int numOfMarks, int numOfBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence) {
+    public DWReads(DiskWorker dw, boolean readTest, boolean writeTest, int numOfMarks, int numOfBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence) {
+        this.dw = dw;
         this.readTest = readTest;
         this.writeTest = writeTest;
         this.numOfMarks = numOfMarks;
@@ -122,5 +128,10 @@ public class DWReads{
         em.getTransaction().commit();
 
         Gui.runPanel.addRun(run);
+    }
+
+    @Override
+    public void run() {
+        this.read(this.dw);
     }
 }

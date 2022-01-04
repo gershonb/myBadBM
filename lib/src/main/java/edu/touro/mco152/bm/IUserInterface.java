@@ -16,4 +16,8 @@ public interface IUserInterface {
 
     void DWexecute();
 
+    void setPassedDW(DiskWorker dw);
+
+    void run();
+
 }

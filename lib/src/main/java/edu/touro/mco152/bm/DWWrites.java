@@ -16,18 +16,23 @@ import static edu.touro.mco152.bm.App.*;
 import static edu.touro.mco152.bm.App.msg;
 import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
 
-public class DWWrites{
+/**
+ * Does the writes for a disk worker
+ */
+public class DWWrites implements Runnable{
 
     public boolean readTest;
     public boolean writeTest;
     public int numOfMarks;      // desired number of marks
     public int numOfBlocks;
     public int blockSizeKb;
-    //int blockSize = blockSizeKb * KILOBYTE;
+    DiskWorker dw;
+    //int blockSize = blockSzizeKb * KILOBYTE;
     //Sequence of IO operations. (random vs. seq.)
     public DiskRun.BlockSequence blockSequence = DiskRun.BlockSequence.SEQUENTIAL;
 
-    public DWWrites(boolean readTest, boolean writeTest, int numOfMarks, int numOfBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence) {
+    public DWWrites(DiskWorker dw, boolean readTest, boolean writeTest, int numOfMarks, int numOfBlocks, int blockSizeKb, DiskRun.BlockSequence blockSequence) {
+        this.dw = dw;
         this.readTest = readTest;
         this.writeTest = writeTest;
         this.numOfMarks = numOfMarks;
@@ -165,5 +170,8 @@ public class DWWrites{
     }
 
 
-
+    @Override
+    public void run() {
+        this.write(this.dw);
+    }
 }
