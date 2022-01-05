@@ -5,6 +5,7 @@ import edu.touro.mco152.bm.persist.EM;
 import edu.touro.mco152.bm.ui.Gui;
 
 import jakarta.persistence.EntityManager;
+
 import javax.swing.*;
 
 import java.beans.PropertyChangeListener;
@@ -42,13 +43,20 @@ import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
  * Swing using an instance of the DiskMark class.
  */
 
+public class DiskWorker {
 
-public class DiskWorker{
+    IExecutor executor;
 
-    private final IUserInterface inter;
+
+    public final IUserInterface inter;
 
     public DiskWorker(IUserInterface inter) {
         this.inter = inter;
+    }
+
+
+    public void setExecutor(IExecutor executor) {
+        this.executor = executor;
     }
 
 
@@ -97,24 +105,12 @@ public class DiskWorker{
         /*
           The GUI allows either a write, read, or both types of BMs to be started. They are done serially.
          */
+
+
+
+        //Write code from here---------------------
         if (App.writeTest) {
-            DiskRun run = new DiskRun(DiskRun.IOMode.WRITE, App.blockSequence);
-            run.setNumMarks(App.numOfMarks);
-            run.setNumBlocks(App.numOfBlocks);
-            run.setBlockSize(App.blockSizeKb);
-            run.setTxSize(App.targetTxSizeKb());
-            run.setDiskInfo(Util.getDiskInfo(dataDir));
-
-            // Tell logger and GUI to display what we know so far about the Run
-            msg("disk info: (" + run.getDiskInfo() + ")");
-
-            Gui.chartPanel.getChart().getTitle().setVisible(true);
-            Gui.chartPanel.getChart().getTitle().setText(run.getDiskInfo());
-
-            // Create a test data file using the default file system and config-specified location
-            if (!App.multiFile) {
-                testFile = new File(dataDir.getAbsolutePath() + File.separator + "testdata.jdm");
-            }
+            executor.DoWrites();
 
             /*
               Begin an outer loop for specified duration (number of 'marks') of benchmark,
@@ -199,7 +195,9 @@ public class DiskWorker{
             em.getTransaction().commit();
 
             Gui.runPanel.addRun(run);
+
         }
+
 
         /*
           Most benchmarking systems will try to do some cleanup in between 2 benchmark operations to
@@ -220,7 +218,13 @@ public class DiskWorker{
         }
 
         // Same as above, just for Read operations instead of Writes.
+
+        //Read Code from here----------------
         if (App.readTest) {
+
+            executor.DoReads();
+        }
+
             DiskRun run = new DiskRun(DiskRun.IOMode.READ, App.blockSequence);
             run.setNumMarks(App.numOfMarks);
             run.setNumBlocks(App.numOfBlocks);
@@ -286,13 +290,8 @@ public class DiskWorker{
                 run.setEndTime(new Date());
             }
 
-            EntityManager em = EM.getEntityManager();
-            em.getTransaction().begin();
-            em.persist(run);
-            em.getTransaction().commit();
 
-            Gui.runPanel.addRun(run);
-        }
+
         App.nextMarkNumber += App.numOfMarks;
         return true;
     }
@@ -301,8 +300,9 @@ public class DiskWorker{
     public void setProgress(int i) {
         inter.DWsetProgress(i);
     }
+
     public void isCancelled() {
-            inter.DWisCancelled();
+        inter.DWisCancelled();
     }
 
     public void publish(DiskMark m) {
@@ -315,7 +315,7 @@ public class DiskWorker{
     }
 
     public void cancel(boolean bool) {
-            inter.DWcancel(bool);
+        inter.DWcancel(bool);
     }
 
     public void execute() {
