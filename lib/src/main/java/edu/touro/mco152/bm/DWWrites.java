@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManager;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,6 +21,7 @@ import static edu.touro.mco152.bm.DiskMark.MarkType.WRITE;
  * Does the writes for a disk worker
  */
 public class DWWrites implements Runnable{
+    public ArrayList<IObserver> observerList = new ArrayList();
 
     public boolean readTest;
     public boolean writeTest;
@@ -40,6 +42,29 @@ public class DWWrites implements Runnable{
         this.blockSizeKb = blockSizeKb;
         this.blockSequence = blockSequence;
     }
+
+
+    /**
+     * register a observer
+     * @param observer takes in a observer to register
+     */
+    public void register(IObserver observer){
+        observerList.add(observer);
+
+    }
+
+    /**
+     * updates all registered observers
+     * @param run takes in a diskRun
+     */
+    private void updateObservers(DiskRun run){
+        for (IObserver o : observerList) {
+            o.update(run);
+        }
+    }
+
+
+
 
     public void write(DiskWorker dw) {
 
@@ -167,6 +192,11 @@ public class DWWrites implements Runnable{
         em.getTransaction().commit();
 
         Gui.runPanel.addRun(run);
+
+         /*
+              Persist info about the Write BM Run and add it to a GUI
+             */
+        updateObservers(run);
     }
 
 

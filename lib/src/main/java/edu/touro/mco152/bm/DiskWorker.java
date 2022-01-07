@@ -115,7 +115,11 @@ public class DiskWorker {
 
         //Write code from here---------------------
         if (App.writeTest) {
-            simpleExecutor se = new simpleExecutor(new DWWrites(this, this.readTest, this.writeTest, this.numOfMarks, this.numOfBlocks, this.blockSizeKb, this.blockSequence));
+            DWWrites writer = new DWWrites(this, this.readTest, this.writeTest, this.numOfMarks, this.numOfBlocks, this.blockSizeKb, this.blockSequence);
+            writer.register(new GUIobserver());
+            writer.register(new DatabaseObserver());
+            writer.register(new SlackObserver());
+            simpleExecutor se = new simpleExecutor(writer);
             se.start();
         }
 
